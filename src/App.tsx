@@ -4,7 +4,10 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
+import { CssBaseline } from "@mui/material";
 import { useEffect, useState } from "react";
+import { Home } from "./components/Home/Home.page";
+import { ThemeProvider } from "./components/ThemeProvider/ThemeProvider.component";
 
 function App() {
   const { isWorkerInitialized, renderPage, loadDocument, currentPage } =
@@ -32,7 +35,14 @@ function App() {
     loadAndRender().catch(console.error);
   }, [currentPage, isWorkerInitialized, loadDocument, renderPage]);
 
-  return <>{pageImgUrl && <img src={pageImgUrl} />}</>;
+  return (
+    <>
+      <ThemeProvider>
+        <CssBaseline />
+        <Home />
+      </ThemeProvider>
+    </>
+  );
 }
 
 export default App;
