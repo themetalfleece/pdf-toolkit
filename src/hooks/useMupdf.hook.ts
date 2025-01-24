@@ -4,7 +4,6 @@ import { Remote } from "comlink";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export function useMupdf() {
-  const [currentPage, setCurrentPage] = useState(0);
   const [isWorkerInitialized, setIsWorkerInitialized] = useState(false);
   const document = useRef<ArrayBuffer | null>(null);
   const mupdfWorker = useRef<Remote<MupdfWorker>>();
@@ -34,27 +33,13 @@ export function useMupdf() {
     return mupdfWorker.current!.loadDocument(arrayBuffer);
   }, []);
 
-  // ===> Here you can create hooks <===
-  // ===> that use the methods of the worker. <===
-  // ===> You can use useCallback to avoid unnecessary rerenders <===
-
-  const renderPage = useCallback((pageIndex: number) => {
-    if (!document.current) {
-      throw new Error("Document not loaded");
-    }
-
-    setCurrentPage(pageIndex);
-
-    return mupdfWorker.current!.renderPageAsImage(
-      pageIndex,
-      (window.devicePixelRatio * 96) / 72
-    );
+  const getDocumentBytes = useCallback(() => {
+    return mupdfWorker.current!.getDocumentBytes();
   }, []);
 
   return {
     isWorkerInitialized,
     loadDocument,
-    renderPage,
-    currentPage,
+    getDocumentBytes,
   };
 }

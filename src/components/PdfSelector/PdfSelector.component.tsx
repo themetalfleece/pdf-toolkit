@@ -1,11 +1,11 @@
-import { selectedPdfAtom } from "@/store/selectedPdf.store";
+import { selectedPdfFileAtom } from "@/store/selectedPdfFile.store";
 import { CloudUpload } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
 import { useAtom } from "jotai";
 import { useDropzone } from "react-dropzone";
 
 export const PdfSelector = () => {
-  const [selectedPdf, setSelectedPdf] = useAtom(selectedPdfAtom);
+  const [selectedPdfFile, setSelectedPdfFile] = useAtom(selectedPdfFileAtom);
 
   const onDrop = (acceptedFiles: File[]) => {
     const pdfFile = acceptedFiles.find(
@@ -13,7 +13,7 @@ export const PdfSelector = () => {
     );
 
     if (pdfFile) {
-      setSelectedPdf(pdfFile);
+      setSelectedPdfFile(pdfFile);
     } else {
       alert("Please upload a valid PDF file.");
     }
@@ -36,7 +36,7 @@ export const PdfSelector = () => {
         border: `2px dashed ${theme.palette.grey[500]}`,
         cursor: "pointer",
         backgroundColor: isDragActive
-          ? theme.palette.primary.dark
+          ? theme.palette.grey[800]
           : theme.palette.background.paper,
       })}
     >
@@ -47,9 +47,9 @@ export const PdfSelector = () => {
           ? "Drop the file here..."
           : "Drag & drop a PDF file here, or click to select one"}
       </Typography>
-      {selectedPdf && (
+      {selectedPdfFile && (
         <Typography fontWeight={500} color="#1976d2">
-          Selected file: {selectedPdf.name}
+          Selected file: {selectedPdfFile.name}
         </Typography>
       )}
     </Box>

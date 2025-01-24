@@ -42,7 +42,13 @@ export class MupdfWorker {
       mupdfjs.ColorSpace.DeviceRGB
     );
 
-    return pixmap.asPNG();
+    return pixmap.asPNG() as Uint8Array;
+  }
+
+  getDocumentBytes(): Uint8Array {
+    if (!this.document) throw new Error("Document not loaded");
+
+    return this.document.saveToBuffer().asUint8Array() as Uint8Array;
   }
 }
 

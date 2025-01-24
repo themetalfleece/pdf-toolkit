@@ -1,5 +1,6 @@
 import { PdfSelector } from "@/components/PdfSelector/PdfSelector.component";
 import { Box } from "@mui/material";
+import { PdfEditor } from "../PdfEditor/PdfEditor.component";
 
 export const Home = () => {
   return (
@@ -14,6 +15,8 @@ export const Home = () => {
       <h1>PDF Image Remover</h1>
 
       <PdfSelector />
+
+      <PdfEditor />
 
       <h5>Coming soon: Select which specific images to remove from the PDF.</h5>
     </Box>
