@@ -2,7 +2,7 @@ import { PdfDownloader } from "@/components/PdfDownloader/PdfDownloader.componen
 import { PdfEditor } from "@/components/PdfEditor/PdfEditor.component";
 import { PdfSelector } from "@/components/PdfSelector/PdfSelector.component";
 import { useMupdf } from "@/hooks/useMupdf.hook";
-import { Box, Typography } from "@mui/material";
+import { Box, Link, Typography } from "@mui/material";
 
 export const Home = () => {
   const mupdf = useMupdf();
@@ -37,6 +37,18 @@ export const Home = () => {
       </Typography>
 
       <h5>Coming soon: Select which specific images to remove from the PDF.</h5>
+
+      <h5>
+        This project is open-source. Check out the code on{" "}
+        <Link
+          href="https://github.com/themetalfleece/pdf-toolkit"
+          target="_blank"
+          rel="noreferrer"
+        >
+          GitHub
+        </Link>
+        .
+      </h5>
     </Box>
   );
 };
