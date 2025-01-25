@@ -1,13 +1,16 @@
 import { useMupdf } from "@/hooks/useMupdf.hook";
-import { processedPdfBytes } from "@/store/processedPdfBytes.store";
 import { selectedPdfFileAtom } from "@/store/selectedPdfFile.store";
 import { useAtom } from "jotai";
 import { useEffect } from "react";
+import { pdfStatusAtom } from "../../store/pdfStatus.store";
 
-export const PdfEditor = () => {
+export interface PdfEditorProps {
+  mupdf: ReturnType<typeof useMupdf>;
+}
+
+export const PdfEditor = ({ mupdf }: PdfEditorProps) => {
   const [selectedPdfFile] = useAtom(selectedPdfFileAtom);
-  const [, setProcessedPdfBytes] = useAtom(processedPdfBytes);
-  const { loadDocument, getDocumentBytes } = useMupdf();
+  const [, setPdfStatus] = useAtom(pdfStatusAtom);
 
   useEffect(() => {
     if (!selectedPdfFile) {
@@ -15,20 +18,20 @@ export const PdfEditor = () => {
     }
 
     const loadAndProcess = async () => {
-      await loadDocument(await selectedPdfFile.arrayBuffer());
-      const processedBytes = await getDocumentBytes();
+      await mupdf.loadDocument(await selectedPdfFile.arrayBuffer());
 
-      if (processedBytes) {
-        setProcessedPdfBytes(processedBytes);
-        console.log("Processed PDF bytes:", processedBytes);
-      }
+      setPdfStatus({
+        state: "loaded",
+        progressCurrent: 0,
+        progressTotal: 0,
+      });
     };
 
     loadAndProcess().catch((error) => {
       console.error(error);
       alert("Failed to process the PDF file.");
     });
-  }, [selectedPdfFile, loadDocument, getDocumentBytes, setProcessedPdfBytes]);
+  }, [selectedPdfFile, mupdf, setPdfStatus]);
 
   if (!selectedPdfFile) {
     return null;

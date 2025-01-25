@@ -20,11 +20,7 @@ export class MupdfWorker {
     }
   }
 
-  // ===> Here you can create methods <===
-  // ===> that call statics and methods <===
-  // ===> from mupdfjs which wraps ./node_modules/mupdf/dist/mupdf.js <===
-
-  loadDocument(document: ArrayBuffer): boolean {
+  loadDocument(document: ArrayBuffer) {
     this.document = mupdfjs.PDFDocument.openDocument(
       document,
       "application/pdf"
@@ -33,7 +29,7 @@ export class MupdfWorker {
     return true;
   }
 
-  renderPageAsImage(pageIndex = 0, scale = 1): Uint8Array {
+  renderPageAsImage(pageIndex = 0, scale = 1) {
     if (!this.document) throw new Error("Document not loaded");
 
     const page = this.document.loadPage(pageIndex);
@@ -45,10 +41,49 @@ export class MupdfWorker {
     return pixmap.asPNG() as Uint8Array;
   }
 
-  getDocumentBytes(): Uint8Array {
+  getDocumentBytes() {
     if (!this.document) throw new Error("Document not loaded");
 
     return this.document.saveToBuffer().asUint8Array() as Uint8Array;
+  }
+
+  extractImages() {
+    if (!this.document) throw new Error("Document not loaded");
+
+    const images: {
+      bbox: mupdfjs.Rect;
+      transform: mupdfjs.Matrix;
+      image: mupdfjs.Image;
+      pageIndex: number;
+    }[] = [];
+
+    for (let i = 0; i < this.document.countPages(); i++) {
+      const page = this.document.loadPage(i);
+
+      page.toStructuredText("preserve-images").walk({
+        onImageBlock: function (bbox, transform, image) {
+          images.push({
+            bbox,
+            transform,
+            image,
+            pageIndex: i,
+          });
+        },
+      });
+    }
+
+    return images;
+  }
+
+  redactImage(image: { bbox: mupdfjs.Rect; pageIndex: number }) {
+    if (!this.document) throw new Error("Document not loaded");
+
+    const { bbox } = image;
+    const page = this.document.loadPage(image.pageIndex);
+    const annotation = page.createAnnotation("Redact");
+
+    annotation.setRect([bbox[0], bbox[1], bbox[0] + 1, bbox[1] + 1]);
+    annotation.applyRedaction(0, mupdfjs.PDFPage.REDACT_IMAGE_REMOVE);
   }
 }
 

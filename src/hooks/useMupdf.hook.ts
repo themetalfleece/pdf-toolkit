@@ -1,6 +1,7 @@
 import { MUPDF_LOADED, type MupdfWorker } from "@/workers/mupdf.worker";
 import * as Comlink from "comlink";
 import { Remote } from "comlink";
+import { Rect } from "mupdf/mupdfjs";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export function useMupdf() {
@@ -37,9 +38,32 @@ export function useMupdf() {
     return mupdfWorker.current!.getDocumentBytes();
   }, []);
 
+  const extractImages = useCallback(() => {
+    return mupdfWorker.current!.extractImages();
+  }, []);
+
+  const redactImages = useCallback(
+    (
+      images: {
+        bbox: Rect;
+        pageIndex: number;
+      }[],
+      onProgress: (image: { bbox: Rect; pageIndex: number }) => void
+    ) => {
+      return Promise.all(
+        images.map((image) =>
+          mupdfWorker.current!.redactImage(image).then(() => onProgress(image))
+        )
+      );
+    },
+    []
+  );
+
   return {
     isWorkerInitialized,
     loadDocument,
     getDocumentBytes,
+    extractImages,
+    redactImages,
   };
 }

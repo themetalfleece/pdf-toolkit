@@ -1,3 +1,4 @@
+import { pdfStatusAtom } from "@/store/pdfStatus.store";
 import { selectedPdfFileAtom } from "@/store/selectedPdfFile.store";
 import { CloudUpload } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
@@ -6,6 +7,7 @@ import { useDropzone } from "react-dropzone";
 
 export const PdfSelector = () => {
   const [selectedPdfFile, setSelectedPdfFile] = useAtom(selectedPdfFileAtom);
+  const [, setPdfStatus] = useAtom(pdfStatusAtom);
 
   const onDrop = (acceptedFiles: File[]) => {
     const pdfFile = acceptedFiles.find(
@@ -14,7 +16,18 @@ export const PdfSelector = () => {
 
     if (pdfFile) {
       setSelectedPdfFile(pdfFile);
+      setPdfStatus({
+        state: "selected",
+        progressCurrent: 0,
+        progressTotal: 0,
+      });
     } else {
+      setSelectedPdfFile(null);
+      setPdfStatus({
+        state: "unselected",
+        progressCurrent: 0,
+        progressTotal: 0,
+      });
       alert("Please upload a valid PDF file.");
     }
   };
