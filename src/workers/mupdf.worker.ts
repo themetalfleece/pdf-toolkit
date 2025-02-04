@@ -86,17 +86,17 @@ export class MupdfWorker {
     return images;
   }
 
-  redactImage(image: { bbox: mupdfjs.Rect; pageIndex: number }) {
+  redactImagesInPage(bboxes: mupdfjs.Rect[], pageIndex: number) {
     if (!this.document) throw new Error("Document not loaded");
 
-    const { bbox } = image;
-    const page = this.document.loadPage(image.pageIndex);
-    const annotation = page.createAnnotation("Redact");
+    const page = this.document.loadPage(pageIndex);
 
-    annotation.setRect([bbox[0], bbox[1], bbox[0] + 1, bbox[1] + 1]);
-    annotation.applyRedaction(0, mupdfjs.PDFPage.REDACT_IMAGE_REMOVE);
+    for (const bbox of bboxes) {
+      const annotation = page.createAnnotation("Redact");
+      annotation.setRect([bbox[0], bbox[1], bbox[0] + 1, bbox[1] + 1]);
+    }
 
-    annotation.destroy();
+    page.applyRedactions(0, mupdfjs.PDFPage.REDACT_IMAGE_REMOVE);
   }
 }
 

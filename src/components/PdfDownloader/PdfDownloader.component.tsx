@@ -19,18 +19,18 @@ export const PdfDownloader = ({ mupdf }: PdfDownloaderProps) => {
   const downloadProcessedPdf = async () => {
     setPdfStatus({
       state: "processing",
-      progressCurrent: 0,
-      progressTotal: 1,
+      progressCurrent: 1,
+      progressTotal: 100,
     });
 
     const allImages = await mupdf.extractImages();
 
-    await mupdf.redactImages(allImages, () =>
-      setPdfStatus((prev) => ({
+    await mupdf.redactImages(allImages, ({ pageIndex, totalPages }) =>
+      setPdfStatus({
         state: "processing",
-        progressCurrent: prev.progressCurrent + 1,
-        progressTotal: allImages.length,
-      }))
+        progressCurrent: pageIndex + 1,
+        progressTotal: totalPages,
+      })
     );
 
     const processedBytes = await mupdf.getDocumentBytes();

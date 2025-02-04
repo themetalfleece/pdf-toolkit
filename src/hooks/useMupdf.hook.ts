@@ -48,11 +48,27 @@ export function useMupdf() {
         bbox: Rect;
         pageIndex: number;
       }[],
-      onProgress: (image: { bbox: Rect; pageIndex: number }) => void
+      onPageProgress: (p: { pageIndex: number; totalPages: number }) => void
     ) => {
-      for (const image of images) {
-        await mupdfWorker.current!.redactImage(image);
-        onProgress(image);
+      const imagesBboxByPage = images.reduce((acc, image) => {
+        if (!acc[image.pageIndex]) {
+          acc[image.pageIndex] = [];
+        }
+        acc[image.pageIndex].push(image.bbox);
+        return acc;
+      }, {} as Record<number, Rect[]>);
+
+      for (const [pageIndex, bboxes] of Object.entries(imagesBboxByPage)) {
+        try {
+          await mupdfWorker.current!.redactImagesInPage(bboxes, +pageIndex);
+        } catch (error) {
+          console.error("Failed to redact image of page:", error);
+        } finally {
+          onPageProgress({
+            pageIndex: +pageIndex,
+            totalPages: Object.keys(imagesBboxByPage).length,
+          });
+        }
       }
     },
     []
