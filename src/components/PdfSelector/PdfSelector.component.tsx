@@ -56,6 +56,9 @@ export const PdfSelector = () => {
         backgroundColor: isDragActive
           ? theme.palette.action.hover
           : theme.palette.background.paper,
+        "&:hover": {
+          backgroundColor: theme.palette.action.hover,
+        },
       })}
     >
       <input {...getInputProps()} />
