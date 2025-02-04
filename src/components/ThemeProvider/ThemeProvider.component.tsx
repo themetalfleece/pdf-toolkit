@@ -4,6 +4,16 @@ const materialTheme = createTheme({
   colorSchemes: {
     dark: true,
   },
+  palette: {
+    text: {
+      primary: "#2c3e50",
+      secondary: "#34495e",
+    },
+    background: {
+      default: "#f8f9fa",
+      paper: "#fefefe",
+    },
+  },
 });
 
 export interface ThemeProviderProps {
