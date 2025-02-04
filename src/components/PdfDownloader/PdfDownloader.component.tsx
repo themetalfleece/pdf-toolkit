@@ -1,7 +1,7 @@
 import { useMupdf } from "@/hooks/useMupdf.hook";
 import { pdfStatusAtom } from "@/store/pdfStatus.store";
 import { selectedPdfFileAtom } from "@/store/selectedPdfFile.store";
-import { Button, CircularProgress } from "@mui/material";
+import { Button, CircularProgress, Typography } from "@mui/material";
 import { useAtom } from "jotai";
 
 export interface PdfDownloaderProps {
@@ -62,7 +62,7 @@ export const PdfDownloader = ({ mupdf }: PdfDownloaderProps) => {
           downloadProcessedPdf().catch(console.error);
         }}
       >
-        Download processed PDF
+        Process & Download PDF
       </Button>
     );
   }
@@ -74,7 +74,9 @@ export const PdfDownloader = ({ mupdf }: PdfDownloaderProps) => {
   if (pdfStatus.state === "processing") {
     return (
       <>
-        Processing your PDF! Please be patient on large files.
+        <Typography variant="h6">
+          Processing your PDF! Please be patient on large files.
+        </Typography>
         <CircularProgress
           variant="determinate"
           value={(pdfStatus.progressCurrent / pdfStatus.progressTotal) * 100}

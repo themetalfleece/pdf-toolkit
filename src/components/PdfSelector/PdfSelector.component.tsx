@@ -45,6 +45,11 @@ export const PdfSelector = () => {
       padding={4}
       borderRadius={2}
       width="80%"
+      minHeight="300px"
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
       sx={(theme) => ({
         border: `2px dashed ${theme.palette.grey[500]}`,
         cursor: "pointer",
@@ -54,14 +59,14 @@ export const PdfSelector = () => {
       })}
     >
       <input {...getInputProps()} />
-      <CloudUpload style={{ fontSize: 48, color: "#1976d2" }} />
-      <Typography>
+      <CloudUpload color="primary" sx={{ fontSize: 48 }} />
+      <Typography variant="h5">
         {isDragActive
-          ? "Drop the file here..."
+          ? "Drop the file here 🔥"
           : "Drag & drop a PDF file here, or click to select one"}
       </Typography>
       {selectedPdfFile && (
-        <Typography fontWeight={500} color="#1976d2">
+        <Typography variant="h6" fontWeight={500} color="primary">
           Selected file: {selectedPdfFile.name}
         </Typography>
       )}

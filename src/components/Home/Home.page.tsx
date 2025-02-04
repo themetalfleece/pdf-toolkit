@@ -3,6 +3,7 @@ import { PdfEditor } from "@/components/PdfEditor/PdfEditor.component";
 import { PdfSelector } from "@/components/PdfSelector/PdfSelector.component";
 import { useMupdf } from "@/hooks/useMupdf.hook";
 import { Box, lighten, Link, Typography } from "@mui/material";
+import { BeforeAndAfterImage } from "../BeforeAndAfterImage/BeforeAndAfterImage.component";
 
 export const Home = () => {
   const mupdf = useMupdf();
@@ -12,7 +13,7 @@ export const Home = () => {
       textAlign="center"
       padding={2}
       width="100%"
-      height="100dvh"
+      minHeight="100dvh"
       display="flex"
       flexDirection="column"
       alignItems="center"
@@ -24,7 +25,9 @@ export const Home = () => {
         }, ${lighten(theme.palette.background.default, 0.2)});`,
       })}
     >
-      <Typography variant="h2">PDF Image Remover</Typography>
+      <Typography variant="h2" fontWeight={500} gutterBottom>
+        PDF Image Remover
+      </Typography>
 
       <Typography variant="h6">
         Remove all images from a PDF file, keeping the text and other elements.
@@ -32,7 +35,7 @@ export const Home = () => {
         Useful for creating printer-friendly versions.
       </Typography>
 
-      <Typography>
+      <Typography fontStyle="italic" variant="body2">
         All processing happens in your browser, and no PDF data leaves your
         device.
       </Typography>
@@ -42,6 +45,10 @@ export const Home = () => {
       <PdfEditor mupdf={mupdf} />
 
       <PdfDownloader mupdf={mupdf} />
+
+      <Box marginTop={6}>
+        <BeforeAndAfterImage />
+      </Box>
 
       <h5>
         Coming soon: Select which specific images to remove from the PDF. <br />

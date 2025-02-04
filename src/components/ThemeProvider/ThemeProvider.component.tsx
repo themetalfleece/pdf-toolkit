@@ -11,7 +11,7 @@ const materialTheme = createTheme({
     },
     background: {
       default: "#f8f9fa",
-      paper: "#fefefe",
+      paper: "#f6f6f6",
     },
   },
 });
