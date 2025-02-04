@@ -43,18 +43,17 @@ export function useMupdf() {
   }, []);
 
   const redactImages = useCallback(
-    (
+    async (
       images: {
         bbox: Rect;
         pageIndex: number;
       }[],
       onProgress: (image: { bbox: Rect; pageIndex: number }) => void
     ) => {
-      return Promise.all(
-        images.map((image) =>
-          mupdfWorker.current!.redactImage(image).then(() => onProgress(image))
-        )
-      );
+      for (const image of images) {
+        await mupdfWorker.current!.redactImage(image);
+        onProgress(image);
+      }
     },
     []
   );

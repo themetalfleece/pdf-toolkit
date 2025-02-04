@@ -29,6 +29,13 @@ export class MupdfWorker {
     return true;
   }
 
+  loadPage(pageIndex: number) {
+    if (!this.document) throw new Error("Document not loaded");
+
+    const page = this.document.loadPage(pageIndex);
+    return page;
+  }
+
   renderPageAsImage(pageIndex = 0, scale = 1) {
     if (!this.document) throw new Error("Document not loaded");
 
@@ -84,6 +91,8 @@ export class MupdfWorker {
 
     annotation.setRect([bbox[0], bbox[1], bbox[0] + 1, bbox[1] + 1]);
     annotation.applyRedaction(0, mupdfjs.PDFPage.REDACT_IMAGE_REMOVE);
+
+    annotation.destroy();
   }
 }
 
