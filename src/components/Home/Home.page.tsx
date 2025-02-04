@@ -22,7 +22,7 @@ export const Home = () => {
       sx={(theme) => ({
         background: `linear-gradient(to bottom, ${
           theme.palette.background.default
-        }, ${lighten(theme.palette.background.default, 0.2)});`,
+        }, ${lighten(theme.palette.background.default, 0.3)});`,
       })}
     >
       <Typography variant="h2" fontWeight={500} gutterBottom>
