@@ -49,7 +49,7 @@ export const PdfSelector = () => {
         border: `2px dashed ${theme.palette.grey[500]}`,
         cursor: "pointer",
         backgroundColor: isDragActive
-          ? theme.palette.grey[800]
+          ? theme.palette.action.hover
           : theme.palette.background.paper,
       })}
     >
