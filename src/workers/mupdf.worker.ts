@@ -51,7 +51,11 @@ export class MupdfWorker {
   getDocumentBytes() {
     if (!this.document) throw new Error("Document not loaded");
 
-    return this.document.saveToBuffer().asUint8Array() as Uint8Array;
+    return this.document
+      .saveToBuffer({
+        garbage: true,
+      })
+      .asUint8Array() as Uint8Array;
   }
 
   extractImages() {
