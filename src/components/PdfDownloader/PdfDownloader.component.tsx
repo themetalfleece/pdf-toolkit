@@ -12,11 +12,11 @@ export const PdfDownloader = ({ mupdf }: PdfDownloaderProps) => {
   const [selectedPdfFile, setSelectedPdfFile] = useAtom(selectedPdfFileAtom);
   const [pdfStatus, setPdfStatus] = useAtom(pdfStatusAtom);
 
-  if (!selectedPdfFile) {
-    return null;
-  }
-
   const downloadProcessedPdf = async () => {
+    if (!selectedPdfFile) {
+      return;
+    }
+
     setPdfStatus({
       state: "processing",
       progressCurrent: 1,
@@ -48,7 +48,7 @@ export const PdfDownloader = ({ mupdf }: PdfDownloaderProps) => {
     setSelectedPdfFile(null);
 
     setPdfStatus({
-      state: "unselected",
+      state: "downloading",
       progressCurrent: 0,
       progressTotal: 0,
     });
@@ -83,6 +83,10 @@ export const PdfDownloader = ({ mupdf }: PdfDownloaderProps) => {
         />
       </>
     );
+  }
+
+  if (pdfStatus.state === "downloading") {
+    return <Typography variant="h6">Your PDF download has started!</Typography>;
   }
 
   return null;
