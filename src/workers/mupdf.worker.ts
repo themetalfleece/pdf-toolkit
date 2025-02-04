@@ -32,6 +32,8 @@ export class MupdfWorker {
   loadPage(pageIndex: number) {
     if (!this.document) throw new Error("Document not loaded");
 
+    this.document?.destroy();
+
     const page = this.document.loadPage(pageIndex);
     return page;
   }
