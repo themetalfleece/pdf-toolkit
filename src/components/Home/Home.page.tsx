@@ -12,6 +12,7 @@ export const Home = () => {
     <Box
       textAlign="center"
       padding={2}
+      paddingTop={4}
       width="100%"
       minHeight="100dvh"
       display="flex"
