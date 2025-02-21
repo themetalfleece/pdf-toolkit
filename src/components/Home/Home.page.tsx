@@ -1,12 +1,15 @@
+import { BeforeAndAfterImage } from "@/components/BeforeAndAfterImage/BeforeAndAfterImage.component";
 import { PdfDownloader } from "@/components/PdfDownloader/PdfDownloader.component";
 import { PdfEditor } from "@/components/PdfEditor/PdfEditor.component";
 import { PdfSelector } from "@/components/PdfSelector/PdfSelector.component";
 import { useMupdf } from "@/hooks/useMupdf.hook";
+import { selectedPdfFileAtom } from "@/store/selectedPdfFile.store";
 import { Box, lighten, Link, Typography } from "@mui/material";
-import { BeforeAndAfterImage } from "../BeforeAndAfterImage/BeforeAndAfterImage.component";
+import { useAtom } from "jotai";
 
 export const Home = () => {
   const mupdf = useMupdf();
+  const [selectedPdfFile] = useAtom(selectedPdfFileAtom);
 
   return (
     <Box
@@ -47,9 +50,11 @@ export const Home = () => {
 
       <PdfDownloader mupdf={mupdf} />
 
-      <Box marginTop={6}>
-        <BeforeAndAfterImage />
-      </Box>
+      {!selectedPdfFile && (
+        <Box marginTop={6}>
+          <BeforeAndAfterImage />
+        </Box>
+      )}
 
       <h5>
         Coming soon: Select which specific images to remove from the PDF. <br />
