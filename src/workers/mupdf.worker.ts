@@ -1,12 +1,14 @@
 /// <reference lib="webworker" />
+import { PDFImageData } from "@/types/PdfImageData.type";
 import * as Comlink from "comlink";
-import * as mupdfjs from "mupdf/mupdfjs";
-import { PDFDocument } from "mupdf/mupdfjs";
+import * as mupdfjs from "mupdf";
+import { Document } from "mupdf";
+import { PDFDocument, PDFPage, Rect } from "mupdf/mupdfjs";
 
 export const MUPDF_LOADED = "MUPDF_LOADED";
 
 export class MupdfWorker {
-  private document?: PDFDocument;
+  private document?: Document;
 
   constructor() {
     this.initializeMupdf();
@@ -21,10 +23,7 @@ export class MupdfWorker {
   }
 
   loadDocument(document: ArrayBuffer) {
-    this.document = mupdfjs.PDFDocument.openDocument(
-      document,
-      "application/pdf"
-    );
+    this.document = mupdfjs.Document.openDocument(document, "application/pdf");
 
     return true;
   }
@@ -36,6 +35,12 @@ export class MupdfWorker {
 
     const page = this.document.loadPage(pageIndex);
     return page;
+  }
+
+  countPages() {
+    if (!this.document) throw new Error("Document not loaded");
+
+    return this.document.countPages();
   }
 
   renderPageAsImage(pageIndex = 0, scale = 1) {
@@ -53,25 +58,24 @@ export class MupdfWorker {
   getDocumentBytes() {
     if (!this.document) throw new Error("Document not loaded");
 
-    return this.document
+    return (this.document as PDFDocument)
       .saveToBuffer({
         garbage: true,
       })
       .asUint8Array() as Uint8Array;
   }
 
-  extractImages() {
+  extractImages(): PDFImageData[] {
     if (!this.document) throw new Error("Document not loaded");
 
-    const images: {
-      bbox: mupdfjs.Rect;
-      transform: mupdfjs.Matrix;
-      image: mupdfjs.Image;
-      pageIndex: number;
-    }[] = [];
+    const images: PDFImageData[] = [];
 
-    for (let i = 0; i < this.document.countPages(); i++) {
-      const page = this.document.loadPage(i);
+    for (
+      let pageIndex = 0;
+      pageIndex < this.document.countPages();
+      pageIndex++
+    ) {
+      const page = this.document.loadPage(pageIndex);
 
       page.toStructuredText("preserve-images").walk({
         onImageBlock: function (bbox, transform, image) {
@@ -79,7 +83,12 @@ export class MupdfWorker {
             bbox,
             transform,
             image,
-            pageIndex: i,
+            pageIndex,
+            url: URL.createObjectURL(
+              new Blob([image.toPixmap().asPNG() as Uint8Array], {
+                type: "image/png",
+              })
+            ),
           });
         },
       });
@@ -88,10 +97,10 @@ export class MupdfWorker {
     return images;
   }
 
-  redactImagesInPage(bboxes: mupdfjs.Rect[], pageIndex: number) {
+  redactImagesInPage(bboxes: Rect[], pageIndex: number) {
     if (!this.document) throw new Error("Document not loaded");
 
-    const page = this.document.loadPage(pageIndex);
+    const page = this.document.loadPage(pageIndex) as PDFPage;
 
     for (const bbox of bboxes) {
       const annotation = page.createAnnotation("Redact");

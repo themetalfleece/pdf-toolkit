@@ -1,3 +1,4 @@
+import { PDFImageData } from "@/types/PdfImageData.type";
 import { MUPDF_LOADED, type MupdfWorker } from "@/workers/mupdf.worker";
 import * as Comlink from "comlink";
 import { Remote } from "comlink";
@@ -29,6 +30,21 @@ export function useMupdf() {
     };
   }, []);
 
+  const countPages = useCallback(() => {
+    return mupdfWorker.current!.countPages();
+  }, []);
+
+  const renderPageAsImage = useCallback(
+    async (pageIndex: number, scale: number) => {
+      if (!document.current) {
+        throw new Error("Document not loaded");
+      }
+
+      return mupdfWorker.current!.renderPageAsImage(pageIndex, scale);
+    },
+    []
+  );
+
   const loadDocument = useCallback((arrayBuffer: ArrayBuffer) => {
     document.current = arrayBuffer;
     return mupdfWorker.current!.loadDocument(arrayBuffer);
@@ -44,10 +60,7 @@ export function useMupdf() {
 
   const redactImages = useCallback(
     async (
-      images: {
-        bbox: Rect;
-        pageIndex: number;
-      }[],
+      images: PDFImageData[],
       onPageProgress: (p: { pageIndex: number; totalPages: number }) => void
     ) => {
       const imagesBboxByPage = images.reduce((acc, image) => {
@@ -77,8 +90,10 @@ export function useMupdf() {
   return {
     isWorkerInitialized,
     loadDocument,
+    countPages,
     getDocumentBytes,
     extractImages,
     redactImages,
+    renderPageAsImage,
   };
 }
