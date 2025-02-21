@@ -86,7 +86,7 @@ export const PdfDownloader = ({ mupdf }: PdfDownloaderProps) => {
       {pdfStatus.state === "processing" && (
         <CircularProgress
           variant="determinate"
-          color="warning"
+          color="success"
           size={18}
           value={
             ((pdfStatus.progressCurrent ?? 0) /
