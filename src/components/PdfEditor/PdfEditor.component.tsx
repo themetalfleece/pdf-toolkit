@@ -126,7 +126,7 @@ export const PdfEditor = ({ mupdf }: PdfEditorProps) => {
     <Box display="flex" flexDirection="column" gap={3} id="pdf-editor">
       {pdfImages?.length && (
         <Typography>
-          Selected images will be kelp. Unselected images will be removed from
+          Selected images will be kept. Unselected images will be removed from
           the PDF.
         </Typography>
       )}
