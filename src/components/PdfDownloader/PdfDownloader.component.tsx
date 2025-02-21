@@ -66,7 +66,7 @@ export const PdfDownloader = ({ mupdf }: PdfDownloaderProps) => {
       size="large"
       sx={{
         position: "fixed",
-        bottom: "12px",
+        bottom: "6px",
         pointerEvents: pdfStatus.state === "loaded" ? "auto" : "none",
         cursor: pdfStatus.state === "loaded" ? "pointer" : "default",
         boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.5)",
