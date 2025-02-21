@@ -22,15 +22,11 @@ export const PdfSelector = () => {
       setSelectedPdfFile(pdfFile);
       setPdfStatus({
         state: "selected",
-        progressCurrent: 0,
-        progressTotal: 0,
       });
     } else {
       setSelectedPdfFile(null);
       setPdfStatus({
         state: "unselected",
-        progressCurrent: 0,
-        progressTotal: 0,
       });
       alert("Please upload a valid PDF file.");
     }

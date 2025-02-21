@@ -12,5 +12,9 @@ export const PdfImage = styled("img")<PdfImageProps>(
     boxShadow: isHighlighted
       ? `0 0 20px ${theme.palette.primary.dark}`
       : undefined,
+    border: isHighlighted
+      ? `2px solid ${theme.palette.primary.dark}`
+      : "2px solid transparent",
+    boxSizing: "border-box",
   })
 );

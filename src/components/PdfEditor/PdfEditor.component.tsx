@@ -62,8 +62,16 @@ export const PdfEditor = ({ mupdf }: PdfEditorProps) => {
         );
         return updatedImages;
       });
+
+      if (pdfStatus.state === "downloading") {
+        setPdfStatus({
+          state: "loaded",
+          progressCurrent: 0,
+          progressTotal: 0,
+        });
+      }
     },
-    [setPdfImages]
+    [pdfStatus.state, setPdfImages, setPdfStatus]
   );
 
   const onToggleAllImagesOfPage = useCallback(
@@ -81,8 +89,16 @@ export const PdfEditor = ({ mupdf }: PdfEditorProps) => {
         );
         return updatedImages;
       });
+
+      if (pdfStatus.state === "downloading") {
+        setPdfStatus({
+          state: "loaded",
+          progressCurrent: 0,
+          progressTotal: 0,
+        });
+      }
     },
-    [setPdfImages]
+    [pdfStatus.state, setPdfImages, setPdfStatus]
   );
 
   if (pdfStatus.state === "selected") {
@@ -96,18 +112,17 @@ export const PdfEditor = ({ mupdf }: PdfEditorProps) => {
     );
   }
 
-  // TODO after downloading, also re-enable the download button if there have been changes
-
   return (
-    <Box display="flex" flexDirection="column" gap={2}>
+    <Box display="flex" flexDirection="column" gap={3}>
       {pdfImages?.length && (
         <Typography>
-          Select images to remove. Unselected images will remain in the PDF.
+          Selected images will be removed. Unselected images will remain in the
+          PDF.
         </Typography>
       )}
 
       {Object.entries(pdfImagesByPage ?? {}).map(([pageIndex, images]) => (
-        <Box key={pageIndex} display="flex" flexDirection="column" gap={2}>
+        <Box key={pageIndex} display="flex" flexDirection="column" gap={1}>
           <Box>
             <Typography variant="h5" fontWeight={500}>
               Page {Number(pageIndex) + 1}
