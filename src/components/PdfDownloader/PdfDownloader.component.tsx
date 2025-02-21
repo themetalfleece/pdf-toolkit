@@ -1,4 +1,5 @@
 import { useMupdf } from "@/hooks/useMupdf.hook";
+import { pdfImagesAtom } from "@/store/pdfImages.store";
 import { pdfStatusAtom } from "@/store/pdfStatus.store";
 import { selectedPdfFileAtom } from "@/store/selectedPdfFile.store";
 import { Button, CircularProgress, Typography } from "@mui/material";
@@ -10,10 +11,11 @@ export interface PdfDownloaderProps {
 
 export const PdfDownloader = ({ mupdf }: PdfDownloaderProps) => {
   const [selectedPdfFile, setSelectedPdfFile] = useAtom(selectedPdfFileAtom);
+  const [pdfImages] = useAtom(pdfImagesAtom);
   const [pdfStatus, setPdfStatus] = useAtom(pdfStatusAtom);
 
   const downloadProcessedPdf = async () => {
-    if (!selectedPdfFile) {
+    if (!selectedPdfFile || !pdfImages) {
       return;
     }
 
@@ -23,9 +25,9 @@ export const PdfDownloader = ({ mupdf }: PdfDownloaderProps) => {
       progressTotal: 100,
     });
 
-    const allImages = await mupdf.extractImages();
+    const imagesToRemove = pdfImages.filter((image) => image.shouldRedact);
 
-    await mupdf.redactImages(allImages, ({ pageIndex, totalPages }) =>
+    await mupdf.redactImages(imagesToRemove, ({ pageIndex, totalPages }) =>
       setPdfStatus({
         state: "processing",
         progressCurrent: pageIndex + 1,
@@ -58,17 +60,15 @@ export const PdfDownloader = ({ mupdf }: PdfDownloaderProps) => {
     return (
       <Button
         variant="contained"
+        size="large"
+        sx={{ position: "sticky", bottom: "12px" }}
         onClick={() => {
           downloadProcessedPdf().catch(console.error);
         }}
       >
-        Process & Download PDF
+        Download PDF without selected images
       </Button>
     );
-  }
-
-  if (pdfStatus.state === "selected") {
-    return <CircularProgress />;
   }
 
   if (pdfStatus.state === "processing") {
