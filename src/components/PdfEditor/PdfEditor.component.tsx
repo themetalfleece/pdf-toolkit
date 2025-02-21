@@ -116,8 +116,8 @@ export const PdfEditor = ({ mupdf }: PdfEditorProps) => {
     <Box display="flex" flexDirection="column" gap={3}>
       {pdfImages?.length && (
         <Typography>
-          Selected images will be removed. Unselected images will remain in the
-          PDF.
+          Selected images will be kelp. Unselected images will be removed from
+          the PDF.
         </Typography>
       )}
 
@@ -141,7 +141,7 @@ export const PdfEditor = ({ mupdf }: PdfEditorProps) => {
           >
             {images.map(({ url, shouldRedact }, i) => (
               <PdfImage
-                isHighlighted={shouldRedact}
+                isHighlighted={!shouldRedact}
                 key={i}
                 src={url}
                 alt={`Image ${i + 1}`}
