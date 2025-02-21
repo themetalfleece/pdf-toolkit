@@ -101,19 +101,29 @@ export const PdfEditor = ({ mupdf }: PdfEditorProps) => {
     [pdfStatus.state, setPdfImages, setPdfStatus]
   );
 
+  useEffect(() => {
+    if (!selectedPdfFile) {
+      return;
+    }
+
+    document
+      .getElementById("pdf-editor")
+      ?.scrollIntoView({ behavior: "smooth" });
+  }, [selectedPdfFile]);
+
   if (pdfStatus.state === "selected") {
     return (
-      <>
+      <Box id="pdf-editor">
         <Typography variant="h6">
           Extracting images. This may take a while...
         </Typography>
         <CircularProgress />
-      </>
+      </Box>
     );
   }
 
   return (
-    <Box display="flex" flexDirection="column" gap={3}>
+    <Box display="flex" flexDirection="column" gap={3} id="pdf-editor">
       {pdfImages?.length && (
         <Typography>
           Selected images will be kelp. Unselected images will be removed from
